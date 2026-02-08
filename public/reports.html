@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PixelForge Nexus | Reports</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">PixelForge Nexus</div>
+  <div class="user">
+    ADMIN
+    <button onclick="goDashboard()">Dashboard</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <h3>Overview</h3>
+    <ul>
+      <li onclick="goDashboard()">Dashboard</li>
+      <li>Projects</li>
+      <li class="active">Reports</li>
+      <li>Settings</li>
+    </ul>
+  </aside>
+
+  <main class="main">
+
+    <h1>Reports</h1>
+
+    <!-- SUMMARY -->
+    <div class="stats">
+      <div class="stat-card">
+        <h3>Total Projects</h3>
+        <p id="total">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Active</h3>
+        <p id="active">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Completed</h3>
+        <p id="completed">0</p>
+      </div>
+    </div>
+
+    <!-- ACTION -->
+    <div class="actions">
+      <button class="primary-btn" onclick="downloadCSV()">Download CSV</button>
+    </div>
+
+    <!-- TABLE -->
+    <div class="project-details-card">
+      <table width="100%" id="reportTable">
+        <thead>
+          <tr>
+            <th align="left">Project Name</th>
+            <th align="left">Status</th>
+            <th align="left">Deadline</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script src="js/reports.js"></script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PixelForge Nexus | Admin Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="logo">PixelForge Nexus</div>
+    <div class="user">
+      ADMIN
+      <button onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <h3>Overview</h3>
+      <ul>
+        <li class="active" onclick="showSection('dashboard', this)">Dashboard</li>
+        <li onclick="showSection('projects', this)">Projects</li>
+        <li onclick="showSection('reports', this)">Reports</li>
+        <li onclick="showSection('settings', this)">Settings</li>
+      </ul>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+      <!-- ================= DASHBOARD ================= -->
+      <section id="dashboardSection">
+        <h1>Admin Dashboard</h1>
+
+        <!-- STATS -->
+        <div class="stats">
+          <div class="stat-card">
+            <h3>Total Projects</h3>
+            <p id="totalCount">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Active</h3>
+            <p id="activeCount">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Completed</h3>
+            <p id="completedCount">0</p>
+          </div>
+        </div>
+
+        <!-- ANALYTICS -->
+        <h2>Analytics</h2>
+        <div class="stats">
+          <div class="stat-card">
+            <h3>Total Projects</h3>
+            <canvas id="totalProjectsChart"></canvas>
+          </div>
+
+          <div class="stat-card">
+            <h3>Status Overview</h3>
+            <canvas id="statusChart"></canvas>
+          </div>
+
+          <div class="stat-card">
+            <h3>Deadlines</h3>
+            <canvas id="deadlineChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PROJECTS ================= -->
+      <section id="projectsSection" style="display:none;">
+        <h1>Projects</h1>
+
+        <div class="actions">
+          <button class="primary-btn" onclick="openModal()">+ Create Project</button>
+        </div>
+
+        <div id="projectsContainer" class="projects"></div>
+        <!-- PROJECT DETAILS PANEL -->
+<section id="projectDetailsSection" style="display:none;">
+  <button class="back-btn" onclick="backToProjects()">← Back to Projects</button>
+
+  <div class="project-details-card">
+    <h1 id="detailName">Project Name</h1>
+
+    <span id="detailStatus" class="badge ACTIVE">ACTIVE</span>
+
+    <p><strong>Deadline:</strong>
+      <span id="detailDeadline"></span>
+    </p>
+
+    <!-- PROGRESS -->
+    <div class="progress-wrapper">
+      <label>Progress</label>
+      <div class="progress-bar">
+        <div id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="card-actions">
+      <button onclick="markCompleted()">Mark Completed</button>
+      <button onclick="alert('Edit coming next 🚀')">Edit</button>
+    </div>
+  </div>
+</section>
+
+      </section>
+
+      <!-- ================= REPORTS ================= -->
+      <!-- REPORTS SECTION -->
+<!-- REPORTS SECTION -->
+<section id="reportsSection" style="display:none;">
+
+  <h1>Reports & Insights</h1>
+  
+  <div class="stats">
+
+    <div class="stat-card">
+      <h3>Project Status</h3>
+      <canvas id="reportStatusChart"></canvas>
+    </div>
+
+    <div class="stat-card">
+      <h3>Active vs Completed</h3>
+      <canvas id="reportBarChart"></canvas>
+    </div>
+
+    <div class="stat-card">
+      <h3>Deadlines Timeline</h3>
+      <canvas id="reportDeadlineChart"></canvas>
+    </div>
+
+  </div>
+
+</section>
+
+
+
+      <!-- ================= SETTINGS ================= -->
+      <!-- SETTINGS SECTION -->
+<section id="settingsSection" style="display:none;">
+
+  <h1>Settings</h1>
+
+  <div class="stats">
+    <div class="stat-card">
+      <h3>Account</h3>
+      <p><strong>Role:</strong> Admin</p>
+      <p><strong>Email:</strong> admin@pixelforge.com</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>Session</h3>
+      <p>Manage your login session</p>
+      <button class="primary-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="stat-card">
+      <h3>System</h3>
+      <p>Version: v1.0.0</p>
+      <p>Status: Stable</p>
+    </div>
+  </div>
+
+</section>
+
+    </main>
+  </div>
+
+  <!-- CREATE PROJECT MODAL -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h3>Create Project</h3>
+
+      <input id="name" placeholder="Project Name" />
+      <input id="deadline" type="date" />
+      <select id="status">
+        <option value="ACTIVE">ACTIVE</option>
+        <option value="COMPLETED">COMPLETED</option>
+      </select>
+
+      <div class="modal-actions">
+        <button onclick="createProject()">Create</button>
+        <button onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHART.JS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- DASHBOARD LOGIC -->
+  <script src="js/dashboard.js"></script>
+
+</body>
+</html>

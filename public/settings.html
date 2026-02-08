@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PixelForge Nexus | Settings</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">PixelForge Nexus</div>
+  <div class="user">
+    ADMIN
+    <button onclick="goDashboard()">Dashboard</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <h3>Overview</h3>
+    <ul>
+      <li onclick="goDashboard()">Dashboard</li>
+      <li onclick="goProjects()">Projects</li>
+      <li onclick="goReports()">Reports</li>
+      <li class="active">Settings</li>
+    </ul>
+  </aside>
+
+  <main class="main">
+
+    <h1>Settings</h1>
+
+    <div class="project-details-card">
+      <h3>User Profile</h3>
+
+      <p><strong>Role:</strong> <span id="role">ADMIN</span></p>
+      <p><strong>Email:</strong> <span id="email">admin@pixelforge.com</span></p>
+
+      <hr style="margin:20px 0; opacity:0.3">
+
+      <h3>Security</h3>
+      <p>Password change functionality is restricted to administrators.</p>
+
+      <button class="primary-btn" onclick="showAlert()">
+        Change Password
+      </button>
+    </div>
+
+  </main>
+</div>
+
+<script src="js/settings.js"></script>
+</body>
+</html>

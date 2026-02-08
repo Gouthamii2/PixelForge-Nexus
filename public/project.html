@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PixelForge Nexus | Project Details</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="logo">PixelForge Nexus</div>
+    <div class="user">
+      ADMIN
+      <button onclick="goBack()">Back</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <h1>Project Details</h1>
+
+    <!-- PROJECT INFO -->
+    <div class="project-detail-card">
+      <h2 id="projectName">Loading...</h2>
+
+      <span id="projectStatus" class="badge"></span>
+
+      <p>
+        <strong>Deadline:</strong>
+        <span id="projectDeadline"></span>
+      </p>
+
+      <p>
+        <strong>Description:</strong>
+      </p>
+      <p id="projectDescription">—</p>
+
+      <div class="detail-actions">
+        <button onclick="markCompleted()">Mark Completed</button>
+        <button onclick="deleteProject()">Archive Project</button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="js/project.js"></script>
+</body>
+</html>
