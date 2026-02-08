@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>PixelForge Nexus | Project Details</title>
+  <title>Project Details | PixelForge Nexus</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <!-- TOP BAR -->
   <header class="topbar">
     <div class="logo">PixelForge Nexus</div>
     <div class="user">
@@ -19,27 +18,16 @@
 
   <main class="main">
 
-    <h1>Project Details</h1>
-
-    <!-- PROJECT INFO -->
-    <div class="project-detail-card">
-      <h2 id="projectName">Loading...</h2>
+    <div class="project-details-card">
+      <h1 id="projectName">Loading...</h1>
 
       <span id="projectStatus" class="badge"></span>
 
-      <p>
-        <strong>Deadline:</strong>
-        <span id="projectDeadline"></span>
-      </p>
+      <p><strong>Deadline:</strong> <span id="projectDeadline"></span></p>
 
-      <p>
-        <strong>Description:</strong>
-      </p>
-      <p id="projectDescription">—</p>
-
-      <div class="detail-actions">
+      <div class="card-actions">
         <button onclick="markCompleted()">Mark Completed</button>
-        <button onclick="deleteProject()">Archive Project</button>
+        <button onclick="archiveProject()">Archive</button>
       </div>
     </div>
 
