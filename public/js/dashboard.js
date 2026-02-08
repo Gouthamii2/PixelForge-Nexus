@@ -1,22 +1,47 @@
-const API = "http://localhost:5000/api/projects";
-const token = localStorage.getItem("token");
-
-/* =========================
+/* =====================================
    AUTH CHECK
-========================= */
+===================================== */
+const token = localStorage.getItem("token");
 if (!token) {
   window.location.href = "index.html";
 }
 
-/* =========================
+/* =====================================
+   STORAGE
+===================================== */
+const STORAGE_KEY = "pixelforge_projects";
+
+function getProjects() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+}
+
+function saveProjects(projects) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+}
+
+/* =====================================
+   INITIAL DATA (FIRST LOAD)
+===================================== */
+if (!localStorage.getItem(STORAGE_KEY)) {
+  saveProjects([
+    {
+      id: Date.now(),
+      name: "PixelForge Nexus Dashboard",
+      status: "ACTIVE",
+      deadline: "2026-02-20"
+    }
+  ]);
+}
+
+/* =====================================
    GLOBAL CHART REFS
-========================= */
+===================================== */
 let totalChart, statusChart, deadlineChart;
 let reportStatusChart, reportBarChart, reportDeadlineChart;
 
-/* =========================
+/* =====================================
    SIDEBAR NAVIGATION
-========================= */
+===================================== */
 function showSection(section, el) {
   const sections = ["dashboard", "projects", "reports", "settings"];
 
@@ -36,60 +61,33 @@ function showSection(section, el) {
   }
 }
 
-/* =========================
+/* =====================================
    ON LOAD
-========================= */
-document.addEventListener("DOMContentLoaded", () => {
-  showLoading();
-  loadProjects();
-});
+===================================== */
+document.addEventListener("DOMContentLoaded", loadProjects);
 
-/* =========================
+/* =====================================
    LOGOUT
-========================= */
+===================================== */
 function logout() {
   localStorage.removeItem("token");
   window.location.href = "index.html";
 }
 
-/* =========================
-   UI HELPERS
-========================= */
-function showLoading() {
-  const el = document.getElementById("projectsContainer");
-  if (el) el.innerHTML = "<p>Loading projects...</p>";
-}
-
-function showEmpty() {
-  const el = document.getElementById("projectsContainer");
-  if (el) el.innerHTML = "<p>No projects found 🚀</p>";
-}
-
-/* =========================
+/* =====================================
    LOAD PROJECTS
-========================= */
-async function loadProjects() {
-  try {
-    const res = await fetch(`${API}/all`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
-    const projects = await res.json();
-
-    renderStats(projects);
-    renderProjects(projects);
-    renderCharts(projects);
-    renderReports(projects);
-
-  } catch (err) {
-    console.error(err);
-    alert("Failed to load dashboard");
-  }
+===================================== */
+function loadProjects() {
+  const projects = getProjects();
+  renderStats(projects);
+  renderProjects(projects);
+  renderCharts(projects);
+  renderReports(projects);
 }
 
-/* =========================
+/* =====================================
    STATS
-========================= */
+===================================== */
 function renderStats(projects) {
   document.getElementById("totalCount").innerText = projects.length;
   document.getElementById("activeCount").innerText =
@@ -98,9 +96,9 @@ function renderStats(projects) {
     projects.filter(p => p.status === "COMPLETED").length;
 }
 
-/* =========================
+/* =====================================
    PROJECT LIST
-========================= */
+===================================== */
 function renderProjects(projects) {
   const container = document.getElementById("projectsContainer");
   if (!container) return;
@@ -108,7 +106,7 @@ function renderProjects(projects) {
   container.innerHTML = "";
 
   if (!projects.length) {
-    showEmpty();
+    container.innerHTML = "<p>No projects found 🚀</p>";
     return;
   }
 
@@ -125,70 +123,72 @@ function renderProjects(projects) {
         <button onclick="archiveProject(${p.id})">Archive</button>
       </div>
     `;
+
     container.appendChild(card);
   });
 }
 
-/* =========================
-   PROJECT DETAILS
-========================= */
-function openProject(id) {
-  window.location.href = `project.html?id=${id}`;
-}
-
-/* =========================
-   CREATE PROJECT
-========================= */
-async function createProject() {
-  const name = document.getElementById("name").value;
+/* =====================================
+   CREATE PROJECT (WORKING)
+===================================== */
+function createProject() {
+  const name = document.getElementById("name").value.trim();
   const deadline = document.getElementById("deadline").value;
   const status = document.getElementById("status").value;
 
   if (!name || !deadline) {
-    alert("Fill all fields");
+    alert("Please fill all fields");
     return;
   }
 
-  await fetch(API, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({ name, deadline, status })
+  const projects = getProjects();
+
+  projects.push({
+    id: Date.now(),
+    name,
+    status,
+    deadline
   });
 
+  saveProjects(projects);
   closeModal();
   loadProjects();
 }
 
-/* =========================
+/* =====================================
    ARCHIVE PROJECT
-========================= */
-async function archiveProject(id) {
+===================================== */
+function archiveProject(id) {
   if (!confirm("Archive this project?")) return;
 
-  await fetch(`${API}/${id}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` }
-  });
-
+  let projects = getProjects();
+  projects = projects.filter(p => p.id !== id);
+  saveProjects(projects);
   loadProjects();
 }
 
-/* =========================
+/* =====================================
+   PROJECT DETAILS (SIMPLE)
+===================================== */
+function openProject(id) {
+  window.location.href = `project.html?id=${id}`;
+}
+
+
+/* =====================================
    MODAL
-========================= */
+===================================== */
 function openModal() {
   document.getElementById("modal").style.display = "flex";
 }
+
 function closeModal() {
   document.getElementById("modal").style.display = "none";
 }
 
-/* =========================
+/* =====================================
    DASHBOARD CHARTS
-========================= */
+===================================== */
 function renderCharts(projects) {
   const active = projects.filter(p => p.status === "ACTIVE").length;
   const completed = projects.filter(p => p.status === "COMPLETED").length;
@@ -230,13 +230,10 @@ function renderCharts(projects) {
   });
 }
 
-/* =========================
-   REPORTS CHARTS
-========================= */
+/* =====================================
+   REPORTS
+===================================== */
 function renderReports(projects) {
-  const statusCanvas = document.getElementById("reportStatusChart");
-  if (!statusCanvas) return;
-
   const active = projects.filter(p => p.status === "ACTIVE").length;
   const completed = projects.filter(p => p.status === "COMPLETED").length;
 
@@ -244,64 +241,51 @@ function renderReports(projects) {
   reportBarChart?.destroy();
   reportDeadlineChart?.destroy();
 
-  reportStatusChart = new Chart(statusCanvas, {
-    type: "doughnut",
-    data: {
-      labels: ["Active", "Completed"],
-      datasets: [{
-        data: [active, completed],
-        backgroundColor: ["#00c853", "#ff5252"]
-      }]
-    }
-  });
-
-  reportBarChart = new Chart(document.getElementById("reportBarChart"), {
-    type: "bar",
-    data: {
-      labels: ["Active", "Completed"],
-      datasets: [{
-        data: [active, completed],
-        backgroundColor: ["#00c853", "#ff5252"]
-      }]
-    },
-    options: { plugins: { legend: { display: false } } }
-  });
-
-  reportDeadlineChart = new Chart(
-    document.getElementById("reportDeadlineChart"),
+  reportStatusChart = new Chart(
+    document.getElementById("reportStatusChart"),
     {
-      type: "line",
+      type: "doughnut",
       data: {
-        labels: projects.map(p => p.name),
+        labels: ["Active", "Completed"],
         datasets: [{
-          data: projects.map((_, i) => i + 1),
-          borderColor: "#00c6ff",
-          tension: 0.4
+          data: [active, completed],
+          backgroundColor: ["#00c853", "#ff5252"]
         }]
       }
     }
   );
+
+  reportBarChart = new Chart(
+    document.getElementById("reportBarChart"),
+    {
+      type: "bar",
+      data: {
+        labels: ["Active", "Completed"],
+        datasets: [{
+          data: [active, completed],
+          backgroundColor: ["#00c853", "#ff5252"]
+        }]
+      },
+      options: { plugins: { legend: { display: false } } }
+    }
+  );
 }
 
-/* =========================
-   REPORT DOWNLOADS (FIXED)
-========================= */
+/* =====================================
+   DOWNLOAD CSV
+===================================== */
 function downloadCSV() {
-  fetch(`${API}/all`, {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-    .then(res => res.json())
-    .then(projects => {
-      let csv = "Project Name,Status,Deadline\n";
-      projects.forEach(p => {
-        csv += `"${p.name}","${p.status}","${new Date(p.deadline).toDateString()}"\n`;
-      });
+  const projects = getProjects();
+  let csv = "Project Name,Status,Deadline\n";
 
-      const blob = new Blob([csv], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "PixelForge_Report.csv";
-      a.click();
-    });
+  projects.forEach(p => {
+    csv += `"${p.name}","${p.status}","${new Date(p.deadline).toDateString()}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "PixelForge_Report.csv";
+  a.click();
 }
