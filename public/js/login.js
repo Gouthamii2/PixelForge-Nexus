@@ -1,6 +1,6 @@
-const API = "http://localhost:5000/api/auth/login";
+// MOCK LOGIN – BACKEND BYPASSED FOR DEMO / ASSIGNMENT
 
-async function login() {
+function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
   const error = document.getElementById("error");
@@ -12,24 +12,9 @@ async function login() {
     return;
   }
 
-  try {
-    const res = await fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
+  // ✅ Fake token for demo
+  localStorage.setItem("token", "demo-token");
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      error.innerText = data.message || "Login failed";
-      return;
-    }
-
-    localStorage.setItem("token", data.token);
-    window.location.href = "dashboard.html";
-
-  } catch {
-    error.innerText = "Server not responding";
-  }
+  // ✅ Redirect to dashboard
+  window.location.href = "dashboard.html";
 }
